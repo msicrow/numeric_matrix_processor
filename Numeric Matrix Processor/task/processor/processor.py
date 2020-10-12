@@ -46,6 +46,26 @@ def multiply_matrices():
         print_result(result)
 
 
+def transpose_matrix():
+    print("1. Main diagonal\n2. Side diagonal\n3. Vertical line\n4. Horizontal line")
+    transposition_choice = input("Your choice: ")
+    matrix_size = input("Enter matrix size: ").split()
+    print("Enter matrix: ")
+    matrix = [input().split() for _ in range(int(matrix_size[0]))]
+    if transposition_choice == "1":
+        result = [[float(matrix[j][i]) for j in range(len(matrix[0]))] for i in range(len(matrix))]
+        print_result(result)
+    elif transposition_choice == "2":
+        result = [[float(matrix[j][i]) for j in reversed(range(len(matrix[0])))] for i in reversed(range(len(matrix)))]
+        print_result(result)
+    elif transposition_choice == "3":
+        result = [[float(matrix[i][j]) for j in reversed(range(len(matrix[0])))] for i in range(len(matrix))]
+        print_result(result)
+    elif transposition_choice == "4":
+        result = [[float(matrix[i][j]) for j in range(len(matrix[0]))] for i in reversed(range(len(matrix)))]
+        print_result(result)
+
+
 def menu_choice(num_choice):
     if num_choice == "1":
         add_matrices()
@@ -53,6 +73,8 @@ def menu_choice(num_choice):
         multiply_by_constant()
     elif num_choice == "3":
         multiply_matrices()
+    elif num_choice == "4":
+        transpose_matrix()
     else:
         sys.exit()
 
@@ -62,6 +84,7 @@ def menu_display():
         print("1. Add matrices")
         print("2. Multiply matrix by a constant")
         print("3. Multiply matrices")
+        print("4. Transpose matrix")
         print("0. Exit")
         num = input("Your choice: ")
         if num == "0":
