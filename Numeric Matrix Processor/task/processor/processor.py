@@ -66,6 +66,40 @@ def transpose_matrix():
         print_result(result)
 
 
+def det_matrix():
+    matrix_size = input("Enter matrix size: ").split()
+    print("Enter matrix: ")
+    matrix = [input().split() for _ in range(int(matrix_size[0]))]
+    return matrix
+
+
+def smaller_matrix(original_matrix, column):
+    new_matrix = [row[:] for row in original_matrix]
+    new_matrix = new_matrix[1:]
+    for i in range(len(new_matrix)):
+        new_matrix[i] = new_matrix[i][0:column] + new_matrix[i][column + 1:]
+    return new_matrix
+
+
+def determinant(matrix):
+    num_rows = len(matrix)
+    for row in matrix:
+        if len(row) != num_rows:
+            print("Not a square matrix.")
+    if len(matrix[0]) == 1:
+        return float(matrix[0][0])
+    elif len(matrix) == 2:
+        simple_determinant = float(matrix[0][0]) * float(matrix[1][1]) - float(matrix[0][1]) * float(matrix[1][0])
+        return simple_determinant
+    x = 0
+    num_columns = num_rows
+    for i in range(num_columns):
+        cofactor = pow(-1, i) * float(matrix[0][i]) * determinant(smaller_matrix(matrix, i))
+        x += cofactor
+
+    return x
+
+
 def menu_choice(num_choice):
     if num_choice == "1":
         add_matrices()
@@ -75,6 +109,8 @@ def menu_choice(num_choice):
         multiply_matrices()
     elif num_choice == "4":
         transpose_matrix()
+    elif num_choice == "5":
+        print(f"The result is:\n{round(determinant(det_matrix()), 2)}\n")
     else:
         sys.exit()
 
@@ -85,6 +121,7 @@ def menu_display():
         print("2. Multiply matrix by a constant")
         print("3. Multiply matrices")
         print("4. Transpose matrix")
+        print("5. Calculate a determinant")
         print("0. Exit")
         num = input("Your choice: ")
         if num == "0":
