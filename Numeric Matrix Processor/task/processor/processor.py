@@ -91,13 +91,13 @@ def determinant(matrix):
     elif len(matrix) == 2:
         simple_determinant = float(matrix[0][0]) * float(matrix[1][1]) - float(matrix[0][1]) * float(matrix[1][0])
         return simple_determinant
-    x = 0
-    num_columns = num_rows
-    for i in range(num_columns):
-        cofactor = pow(-1, i) * float(matrix[0][i]) * determinant(smaller_matrix(matrix, i))
-        x += cofactor
-
-    return x
+    else:
+        x = 0
+        num_columns = num_rows
+        for i in range(num_columns):
+            cofactor = pow(-1, i) * float(matrix[0][i]) * determinant(smaller_matrix(matrix, i))
+            x += cofactor
+        return x
 
 
 def menu_choice(num_choice):
