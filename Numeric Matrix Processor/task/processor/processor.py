@@ -14,7 +14,7 @@ def two_matrices():
 def print_result(result):
     print("The result is:")
     for r in result:
-        print(*r, sep=' ')
+        print(*[round(x, 3) + 0 for x in r])
     print()
 
 
@@ -66,38 +66,46 @@ def transpose_matrix():
         print_result(result)
 
 
-def det_matrix():
+def get_matrix():
     matrix_size = input("Enter matrix size: ").split()
     print("Enter matrix: ")
     matrix = [input().split() for _ in range(int(matrix_size[0]))]
     return matrix
 
 
-def smaller_matrix(original_matrix, column):
-    new_matrix = [row[:] for row in original_matrix]
-    new_matrix = new_matrix[1:]
-    for i in range(len(new_matrix)):
-        new_matrix[i] = new_matrix[i][0:column] + new_matrix[i][column + 1:]
-    return new_matrix
+def matrix_minor(matrix, i, j):
+    return [row[:j] + row[j + 1:] for row in (matrix[:i] + matrix[i + 1:])]
 
 
 def determinant(matrix):
-    num_rows = len(matrix)
-    for row in matrix:
-        if len(row) != num_rows:
-            print("Not a square matrix.")
-    if len(matrix[0]) == 1:
+    if len(matrix) == 1:
         return float(matrix[0][0])
     elif len(matrix) == 2:
-        simple_determinant = float(matrix[0][0]) * float(matrix[1][1]) - float(matrix[0][1]) * float(matrix[1][0])
-        return simple_determinant
+        return float(matrix[0][0]) * float(matrix[1][1]) - float(matrix[0][1]) * float(matrix[1][0])
+    det = 0
+    for c in range(len(matrix)):
+        det += ((-1) ** c) * float(matrix[0][c]) * determinant(matrix_minor(matrix, 0, c))
+    return det
+
+
+def inverse_matrix(matrix):
+    det = determinant(matrix)
+    if not det:
+        print("This matrix doesn't have an inverse.\n")
     else:
-        x = 0
-        num_columns = num_rows
-        for i in range(num_columns):
-            cofactor = pow(-1, i) * float(matrix[0][i]) * determinant(smaller_matrix(matrix, i))
-            x += cofactor
-        return x
+        if len(matrix) == 2:
+            return [[float(matrix[1][1]) / det, -1 * float(matrix[0][1]) / det],
+                    [-1 * float(matrix[1][0] / det), float(matrix[0][0]) / det]]
+        cofactors = []
+        for r in range(len(matrix)):
+            cofactor_row = []
+            for c in range(len(matrix)):
+                minor = matrix_minor(matrix, r, c)
+                cofactor_row.append(((-1) ** (r + c)) * determinant(minor))
+            cofactors.append(cofactor_row)
+        cofactors = [[float(cofactors[j][i]) for j in range(len(matrix[0]))] for i in range(len(matrix))]
+        result = [[float(cofactors[i][j]) / det for j in range(len(matrix[0]))] for i in range(len(matrix))]
+        print_result(result)
 
 
 def menu_choice(num_choice):
@@ -110,7 +118,9 @@ def menu_choice(num_choice):
     elif num_choice == "4":
         transpose_matrix()
     elif num_choice == "5":
-        print(f"The result is:\n{round(determinant(det_matrix()), 2)}\n")
+        print(f"The result is:\n{round(determinant(get_matrix()), 2)}\n")
+    elif num_choice == "6":
+        inverse_matrix(get_matrix())
     else:
         sys.exit()
 
@@ -122,6 +132,7 @@ def menu_display():
         print("3. Multiply matrices")
         print("4. Transpose matrix")
         print("5. Calculate a determinant")
+        print("6. Inverse matrix")
         print("0. Exit")
         num = input("Your choice: ")
         if num == "0":
